@@ -1,0 +1,21 @@
+
+Create PROCEDURE [dbo].[InsertOrderAssignment]
+(
+	@DeliveryDate varchar(50),
+	@OrderID int,
+	@CustomerID int,
+	@TimeSpanID int
+)
+AS
+BEGIN
+begin transaction
+	Declare @DriverAssignmentID int
+	Declare @DayOfWeek int
+	
+	SELECT @DayOfWeek=DATEPART(dw,Convert(date,@DeliveryDate,126))
+	--SELECT @DriverAssignmentID=id from DriverAssignment where day=@DayOfWeek and TimeSpan_Id=@TimeSpanID
+	SELECT @DriverAssignmentID=0
+	
+	Insert into orderassignment (DeliveryDate,OrderId,DriverAssignment_Id,Booked,Customer_Id,TimeSpan_Id) values (@DeliveryDate,@OrderID,@DriverAssignmentID,1,@CustomerID,@TimeSpanID)
+commit transaction
+END

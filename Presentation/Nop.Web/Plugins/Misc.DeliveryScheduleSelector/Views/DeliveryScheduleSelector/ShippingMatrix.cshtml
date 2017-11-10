@@ -1,0 +1,172 @@
+﻿@{
+    Layout = "";
+}
+<link href="~/Plugins/Misc.DeliveryScheduleSelector/css/shipstyles.css" rel="stylesheet" />
+<script type="text/javascript">
+    $(document).ready(function () {
+        $('.shipping-method-next-step-button').hide();
+        $('.shipping-method-next-step-button-dummy').click(function () {
+            if ($("#deliverytime").val().length == 0) {
+                alert($('#aswaaq_shipping_message').val());
+            }
+        });
+        $('.deliveryReq').attr('visibility', "visible");
+        $('#shipOrder').hide;
+        $(".radio").change(function () { //use change event
+            if (this.value.indexOf("By Ground") != -1) { //check value if it is By Ground
+                $('#shipOrder').stop(true, true).show(500); //than show
+            } else {
+                $('#shipOrder').stop(true, true).hide(500); //else hide
+            }
+        });
+
+        $(".deliveryinfo").click(function () {
+            
+            var clickedDiv = $(this);
+            //if (parseInt(clickedDiv.html()) > 0) {
+            $(".selecteddiv").attr("class", "deliveryinfo");
+            clickedDiv.attr("class", "selecteddiv");
+            var dlvid = clickedDiv.attr("id");
+            $("#deliverytime").val(dlvid);
+
+            $.ajax({
+                url: "/MiscDeliveryScheduleSelector/UpdateOrderAssignmentSlot",
+                data: "{'dlvid':'" + dlvid + "'}",
+                type: "POST",
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (data) {
+                },
+                error: function (response) {
+                    alert(response.data);
+                },
+                failure: function (response) {
+                    alert(response);
+                }
+            });
+
+            if ($("#deliverytime").val().length != 0) {
+                $('.shipping-method-next-step-button').show();
+                $('.shipping-method-next-step-button-dummy').hide();
+                var chunks = dlvid.split(";");
+                @*document.getElementById("txtdate").innerHTML = chunks[1];
+                    document.getElementById("txttime").innerHTML = chunks[2];
+                    document.getElementById("txtzone").innerHTML =  @Html.Raw(Json.Encode(ViewBag.DeliveryZone))
+                    document.getElementById("txtarea").innerHTML =  @Html.Raw(Json.Encode(ViewBag.DeliveryArea))*@
+
+                $('.deliveryReq').attr('visibility', "hidden");
+            }
+            else {
+                
+                $('.deliveryReq').attr('visibility', "visible");
+            }
+           
+            //}
+        });
+
+    });
+
+</script>
+@model Nop.Plugin.Misc.DeliveryScheduleSelector.Models.CheckoutTimeSpanModel
+@using Nop.Web.Framework;
+
+@{string date1 = "";
+string date2 = "";
+string date3 = "";
+string date4 = "";
+string date5 = "";
+string date6 = "";
+string date7 = "";
+Int32 day1 = 0;
+Int32 day2 = 0;
+Int32 day3 = 0;
+Int32 day4 = 0;
+Int32 day5 = 0;
+Int32 day6 = 0;
+Int32 day7 = 0;
+DateTime dt1 = new DateTime();
+DateTime dt2 = new DateTime();
+DateTime dt3 = new DateTime();
+DateTime dt4 = new DateTime();
+DateTime dt5 = new DateTime();
+DateTime dt6 = new DateTime();
+DateTime dt7 = new DateTime();}
+
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+    <center>
+        <input type="hidden" id="aswaaq_shipping_message" name="aswaaq_shipping_message" value="@T("Aswaaq.Delivery.Schedule.Notselected.Message")" />
+        <input type="hidden" id="deliverytime" name="deliverytime" />
+        <div id="shipOrder" class="shipOrder">
+            <table class="matrix-table">
+                @foreach (var item in Model.CheckoutTimeSpanList)
+                {
+                    if (item.Id == 0)
+                    {
+                        if (item.Name == "DATE")
+                        {
+                            date1 = item.MaxOrderCanTake1;
+                            date2 = item.MaxOrderCanTake2;
+                            date3 = item.MaxOrderCanTake3;
+                            date4 = item.MaxOrderCanTake4;
+                            date5 = item.MaxOrderCanTake5;
+                            date6 = item.MaxOrderCanTake6;
+                            date7 = item.MaxOrderCanTake7;
+                            dt1 = Convert.ToDateTime(date1);
+                            dt2 = Convert.ToDateTime(date2);
+                            dt3 = Convert.ToDateTime(date3);
+                            dt4 = Convert.ToDateTime(date4);
+                            dt5 = Convert.ToDateTime(date5);
+                            dt6 = Convert.ToDateTime(date6);
+                            dt7 = Convert.ToDateTime(date7);
+                            <tr class="tabhead">
+                                <td></td>
+                                <td>@dt1.ToString("ddd, dd")</td>
+                                <td>@dt2.ToString("ddd, dd")</td>
+                                <td>@dt3.ToString("ddd, dd")</td>
+                                <td>@dt4.ToString("ddd, dd")</td>
+                                <td>@dt5.ToString("ddd, dd")</td>
+                                <td>@dt6.ToString("ddd, dd")</td>
+                                <td>@dt7.ToString("ddd, dd")</td>
+                            </tr>
+                        }
+                    }
+                    else
+                    {
+                        Int32.TryParse(item.MaxOrderCanTake1, out day1);
+                        Int32.TryParse(item.MaxOrderCanTake2, out day2);
+                        Int32.TryParse(item.MaxOrderCanTake3, out day3);
+                        Int32.TryParse(item.MaxOrderCanTake4, out day4);
+                        Int32.TryParse(item.MaxOrderCanTake5, out day5);
+                        Int32.TryParse(item.MaxOrderCanTake6, out day6);
+                        Int32.TryParse(item.MaxOrderCanTake7, out day7);
+                        <tr>
+                            <td class="columnhd">@item.Name</td>
+                            <td @(day1 > 0 ? "class=availablediv" : "class=notavailablediv")><div @(day1 > 0 ? "class=deliveryinfo" : null) id="@item.Id.ToString();@date1;@item.Name"><input id="@item.Id.ToString().1.info" type="hidden" value="@item.Id.ToString();@date1;@item.Name" /></div></td>
+                            <td @(day2 > 0 ? "class=availablediv" : "class=notavailablediv")><div @(day2 > 0 ? "class=deliveryinfo" : null) id="@item.Id.ToString();@date2;@item.Name"><input id="@item.Id.ToString().2.info" type="hidden" value="@item.Id.ToString();@date2;@item.Name" /></div></td>
+                            <td @(day3 > 0 ? "class=availablediv" : "class=notavailablediv")><div @(day3 > 0 ? "class=deliveryinfo" : null) id="@item.Id.ToString();@date3;@item.Name"><input id="@item.Id.ToString().3.info" type="hidden" value="@item.Id.ToString();@date3;@item.Name" /></div></td>
+                            <td @(day4 > 0 ? "class=availablediv" : "class=notavailablediv")><div @(day4 > 0 ? "class=deliveryinfo" : null) id="@item.Id.ToString();@date4;@item.Name"><input id="@item.Id.ToString().4.info" type="hidden" value="@item.Id.ToString();@date4;@item.Name" /></div></td>
+                            <td @(day5 > 0 ? "class=availablediv" : "class=notavailablediv")><div @(day5 > 0 ? "class=deliveryinfo" : null) id="@item.Id.ToString();@date5;@item.Name"><input id="@item.Id.ToString().5.info" type="hidden" value="@item.Id.ToString();@date5;@item.Name" /></div></td>
+                            <td @(day6 > 0 ? "class=availablediv" : "class=notavailablediv")><div @(day6 > 0 ? "class=deliveryinfo" : null) id="@item.Id.ToString();@date6;@item.Name"><input id="@item.Id.ToString().6.info" type="hidden" value="@item.Id.ToString();@date6;@item.Name" /></div></td>
+                            <td @(day7 > 0 ? "class=availablediv" : "class=notavailablediv")><div @(day7 > 0 ? "class=deliveryinfo" : null) id="@item.Id.ToString();@date7;@item.Name"><input id="@item.Id.ToString().7.info" type="hidden" value="@item.Id.ToString();@date7;@item.Name" /></div></td>
+                        </tr>
+                    }
+
+                }
+            </table>
+        </div>
+
+        <table class="matrix-table" border="0" cellspacing="0" cellpadding="0">
+            <tr>
+                <td width="4">&nbsp;</td>
+                <td width="60" bgcolor="#2c9a42">&nbsp;</td>
+                <td width="94" style="padding-left: 5px; padding-right: 5px;" class="textalignment"> @T("ShippingMethod.Available")</td>
+                <td width="60" bgcolor="#212E79">&nbsp;</td>
+                <td width="136" style="padding-left: 5px; padding-right: 5px;" class="textalignment">@T("ShippingMethod.Selected")</td>
+                <td width="60" bgcolor="#f4f4f4">&nbsp;</td>
+                <td width="200" style="padding-left: 5px; padding-right: 5px;" class="textalignment">@T("ShippingMethod.NotAvailable")</td>
+            </tr>
+        </table>
+    </center>
+}

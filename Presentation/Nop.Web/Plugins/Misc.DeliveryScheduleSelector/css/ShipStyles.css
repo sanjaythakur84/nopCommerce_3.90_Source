@@ -1,0 +1,77 @@
+.availablediv {
+        background-color: #2c9a42 !important;
+        color: #fff !important;
+        width: 88px;
+        height: 37px;
+        cursor: pointer;
+        padding-top: 0px;
+    }
+.notavailablediv {
+        background-color: #f4f4f4 !important;
+        color: #fff !important;
+        width: 88px;
+        height: 37px;
+        cursor: pointer;
+        padding-top: 0px;
+    }
+
+        .availablediv:hover {
+            background-color: #56ae68 !important;
+            color: #fff !important;
+            width: 88px;
+            height: 37px;
+            cursor: pointer;
+        }
+
+    .deliveryinfo {
+        width: auto;
+        height: 37px;
+        padding-top: 9px;
+    }
+
+    .shipOrder td {
+        background-color: #f4f4f4;
+        color: #000;
+        text-align: center;
+        font-size: 12px;
+    }
+
+    .shipOrder .tabhead td {
+        height: 37px;
+        background: #4ab2f1 !important;
+        color: #fff;
+        padding: 0 10px;
+    }
+
+    .shipOrder div {
+       
+    }
+
+    .shipOrder .tabhead1 td {
+        height: 37px;
+        background: #b1b1b1 !important;
+        color: #fff;
+        padding: 0 10px;
+    }
+
+    .columnhd {
+        height: 37px;
+        background: #b1b1b1 !important;
+        color: #fff !important;
+        padding: 0 10px;
+        width: 180px !important;
+    }
+
+    .selecteddiv {
+        height: 37px;
+        padding-top: 9px;
+        color: #212E79;
+        background: #212E79 url(/Plugins/Misc.DeliveryScheduleSelector/delivery-icon.png) center no-repeat;
+        text-indent: -9999px;
+    }
+.matrix-table {
+    width:80%;
+}
+.matrix-table td {
+    border:1px solid #f4f4f4;
+}

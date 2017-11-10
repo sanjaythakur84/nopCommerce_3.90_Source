@@ -1,0 +1,2 @@
+DataProvider: sqlserver
+DataConnectionString: Data Source=DELL;Initial Catalog=Nutiza;Integrated Security=True;Persist Security Info=False

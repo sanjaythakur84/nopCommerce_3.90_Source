@@ -1,0 +1,58 @@
+CREATE TABLE [dbo].[OrderAssignment](
+	[Id] [int] IDENTITY(1,1) NOT NULL,
+	[Booked] [bit] NOT NULL,
+	[DeliveryDate] [datetime] NOT NULL,
+	[OrderId] [int] NULL,
+	[DriverAssignment_Id] [int] NULL,
+	[Customer_Id] [int] NULL,
+	[TimeSpan_Id] [int] NULL,
+ CONSTRAINT [PK_OrderAssignment] PRIMARY KEY CLUSTERED 
+(
+	[Id] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+
+
+
+CREATE TABLE [dbo].[Timespan](
+	[Id] [int] IDENTITY(1,1) NOT NULL,
+	[Name] [nvarchar](400) NOT NULL,
+	[TimeFrom] [time](7) NOT NULL,
+	[TimeTo] [time](7) NOT NULL,
+PRIMARY KEY CLUSTERED 
+(
+	[Id] ASC
+)WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON) ON [PRIMARY]
+) ON [PRIMARY]
+
+
+SET IDENTITY_INSERT [dbo].[Timespan] ON 
+
+
+INSERT [dbo].[Timespan] ([Id], [Name], [TimeFrom], [TimeTo]) VALUES (1, N'09:00 -10:00', CAST(0x0700A8E76F4B0000 AS Time), CAST(0x070010ACD1530000 AS Time))
+
+INSERT [dbo].[Timespan] ([Id], [Name], [TimeFrom], [TimeTo]) VALUES (2, N'10:00 - 11:00', CAST(0x070010ACD1530000 AS Time), CAST(0x07007870335C0000 AS Time))
+
+INSERT [dbo].[Timespan] ([Id], [Name], [TimeFrom], [TimeTo]) VALUES (3, N'11:00 - 12:00', CAST(0x07007870335C0000 AS Time), CAST(0x0700E03495640000 AS Time))
+
+INSERT [dbo].[Timespan] ([Id], [Name], [TimeFrom], [TimeTo]) VALUES (4, N'13:00 - 14:00 ', CAST(0x070048F9F66C0000 AS Time), CAST(0x0700B0BD58750000 AS Time))
+
+INSERT [dbo].[Timespan] ([Id], [Name], [TimeFrom], [TimeTo]) VALUES (5, N'14:00 - 15:00', CAST(0x0700B0BD58750000 AS Time), CAST(0x07001882BA7D0000 AS Time))
+
+INSERT [dbo].[Timespan] ([Id], [Name], [TimeFrom], [TimeTo]) VALUES (6, N'15:00 - 16:00', CAST(0x07001882BA7D0000 AS Time), CAST(0x070080461C860000 AS Time))
+
+INSERT [dbo].[Timespan] ([Id], [Name], [TimeFrom], [TimeTo]) VALUES (7, N'16:00 - 17:00', CAST(0x070080461C860000 AS Time), CAST(0x0700E80A7E8E0000 AS Time))
+
+INSERT [dbo].[Timespan] ([Id], [Name], [TimeFrom], [TimeTo]) VALUES (8, N'12:00 - 13:00', CAST(0x0700E03495640000 AS Time), CAST(0x070048F9F66C0000 AS Time))
+
+INSERT [dbo].[Timespan] ([Id], [Name], [TimeFrom], [TimeTo]) VALUES (9, N'17:00 - 18:00', CAST(0x0700E80A7E8E0000 AS Time), CAST(0x070050CFDF960000 AS Time))
+
+INSERT [dbo].[Timespan] ([Id], [Name], [TimeFrom], [TimeTo]) VALUES (10, N'18:00 - 19:00', CAST(0x070050CFDF960000 AS Time), CAST(0x0700B893419F0000 AS Time))
+
+INSERT [dbo].[Timespan] ([Id], [Name], [TimeFrom], [TimeTo]) VALUES (11, N'19:00 - 20:00', CAST(0x0700B893419F0000 AS Time), CAST(0x07002058A3A70000 AS Time))
+
+INSERT [dbo].[Timespan] ([Id], [Name], [TimeFrom], [TimeTo]) VALUES (12, N'20:00 - 21:00', CAST(0x07002058A3A70000 AS Time), CAST(0x0700881C05B00000 AS Time))
+
+SET IDENTITY_INSERT [dbo].[Timespan] OFF
+
+

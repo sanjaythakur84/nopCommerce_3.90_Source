@@ -1,0 +1,63 @@
+
+Create PROCEDURE [dbo].[CheckoutTimeSpanMatrix]
+(
+	@zoneid int,
+	@check  int = 0
+)
+AS
+BEGIN
+
+declare @dateFrom as Date = getDate()
+declare @dateTo as Date = DATEADD(D,6, @dateFrom)
+
+if object_id('tempdb..#tmp20141112') is not null
+    drop table #tmp20141112
+if object_id('tempdb..#tmp201411121') is not null
+    drop table #tmp201411121
+
+	
+		SELECT t.TimeFrom, t.ID, t.NAME, CONVERT(VARCHAR, SUM(IIF((DATEADD(minute, 60, getdate()) <= (CONVERT(datetime, @dateFrom) + CONVERT(datetime, t.TimeFrom))),
+				 10, 0)) - MAX(ISNULL(oa.DAY1,0))) DAY1, 
+			CONVERT(VARCHAR, 10 - MAX(ISNULL(oa.DAY2,0))) DAY2, 
+			CONVERT(VARCHAR, 10 - MAX(ISNULL(oa.DAY3,0))) DAY3,
+			CONVERT(VARCHAR, 10 - MAX(ISNULL(oa.DAY4,0))) DAY4,
+			CONVERT(VARCHAR, 10 - MAX(ISNULL(oa.DAY5,0))) DAY5,
+			CONVERT(VARCHAR, 10 - MAX(ISNULL(oa.DAY6,0))) DAY6,
+			CONVERT(VARCHAR, 10 - MAX(ISNULL(oa.DAY7,0))) DAY7
+		INTO #tmp20141112
+		FROM Timespan t
+		
+		LEFT JOIN
+		(
+			SELECT t.ID, t.NAME, SUM(t.DAY1) DAY1, SUM(t.DAY2) DAY2, SUM(t.DAY3) DAY3, SUM(t.DAY4) DAY4, SUM(t.DAY5) DAY5, SUM(t.DAY6) DAY6, SUM(t.DAY7) DAY7
+			FROM
+			(
+				SELECT t.ID, t.NAME, 
+					(IIF(DATEPART(dw, oa.DeliveryDate)=DATEPART(dw, DATEADD(D,0, @dateFrom)), 1, 0)) DAY1, 
+					(IIF(DATEPART(dw, oa.DeliveryDate)=DATEPART(dw, DATEADD(D,1, @dateFrom)), 1, 0)) DAY2, 
+					(IIF(DATEPART(dw, oa.DeliveryDate)=DATEPART(dw, DATEADD(D,2, @dateFrom)), 1, 0)) DAY3,
+					(IIF(DATEPART(dw, oa.DeliveryDate)=DATEPART(dw, DATEADD(D,3, @dateFrom)), 1, 0)) DAY4,
+					(IIF(DATEPART(dw, oa.DeliveryDate)=DATEPART(dw, DATEADD(D,4, @dateFrom)), 1, 0)) DAY5,
+					(IIF(DATEPART(dw, oa.DeliveryDate)=DATEPART(dw, DATEADD(D,5, @dateFrom)), 1, 0)) DAY6,
+					(IIF(DATEPART(dw, oa.DeliveryDate)=DATEPART(dw, DATEADD(D,6, @dateFrom)), 1, 0)) DAY7
+				FROM Timespan t
+				JOIN OrderAssignment oa ON oa.TimeSpan_Id = t.Id and oa.DeliveryDate between @dateFrom and @dateTo
+				
+			) t GROUP BY t.ID, t.NAME
+		) oa ON oa.Id = t.Id and oa.Name = t.Name
+		GROUP BY t.timefrom, t.ID, t.NAME
+		ORDER BY t.TimeFrom
+		--select * from #tmp20141112
+		SELECT '00:00' timefrom, 0 ID, 'DATE' NAME, 
+			CONVERT(VARCHAR, DATEADD(D,0, @dateFrom)) MaxOrderCanTake1, CONVERT(VARCHAR, DATEADD(D,1, @dateFrom)) MaxOrderCanTake2, CONVERT(VARCHAR, DATEADD(D,2, @dateFrom)) MaxOrderCanTake3, CONVERT(VARCHAR, DATEADD(D,3, @dateFrom)) MaxOrderCanTake4, 
+			CONVERT(VARCHAR, DATEADD(D,4, @dateFrom)) MaxOrderCanTake5, CONVERT(VARCHAR, DATEADD(D,5, @dateFrom)) MaxOrderCanTake6, CONVERT(VARCHAR, DATEADD(D,6, @dateFrom)) MaxOrderCanTake7
+		UNION
+		SELECT timefrom, ID, NAME, DAY1, DAY2, DAY3, DAY4, DAY5, DAY6, DAY7 FROM #tmp20141112
+		
+END
+--exec CheckoutTimeSpanMatrix 14,1
+
+
+
+
+

@@ -1,0 +1,127 @@
+﻿@model Nop.Plugin.Shipping.Aswaaq.Models.DeliveryAllotmentModel
+@using Nop.Web.Framework;
+@using Nop.Core.Infrastructure;
+<script>
+    $(function () {
+        $("tr:even").css("background-color", "#f5f5f5");
+        $('.expand-row').click(function () {
+            $('.delivery-allotment-details').hide();
+            $(this).parent().find('.delivery-allotment-details').show();
+            $('.collapse-row').hide();
+            $('.expand-row').show();
+            $(this).parent().find('.collapse-row').show();
+            $(this).hide();
+        });
+        $('.collapse-row').click(function () {
+            $('.delivery-allotment-details').hide();
+            $(this).parent().find('.expand-row').show();
+            $(this).hide();
+        });
+        $('.k-grid-edit').click(function () {
+            $('.timespan-quantity-input').hide();
+            $('.timespan-quantity').show();
+            $('.k-grid-update').hide();
+            $('.k-grid-edit').show();
+            $(this).parent().find('.k-grid-update').show();
+            $(this).hide();
+            $(this).parent().parent().find('.timespan-quantity-input').show();
+            $(this).parent().parent().find('.timespan-quantity').hide()
+        });
+        $('.k-grid-update').click(function () {
+            $(this).parent().find('.k-grid-edit').show();
+            $(this).hide();
+            $(this).parent().parent().find('.timespan-quantity-input').hide();
+            $(this).parent().parent().find('.timespan-quantity').show();
+
+            $.ajax({
+                url: "/Plugins/AswaaqShipping/UpdateDeliveryCount",
+                data: "{'NumOfOrders':'" + $(this).parent().parent().find('.timespan-quantity-input').val() + "','DayNumber':'" + $(this).parent().find('.day-number').val() + "','TimeSpanID':'" + $(this).parent().find('.time-span-id').val() + "'}",
+                type: "POST",
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (data) {
+                },
+                error: function (response) {
+                    alert(response.data);
+                },
+                failure: function (response) {
+                    alert(response);
+                }
+            });
+            $(this).parent().parent().find('.timespan-quantity').text($(this).parent().parent().find('.timespan-quantity-input').val());
+        });
+
+        $('.number').each(function () {
+            $(this).keyup(function () {
+                number(this);
+            });
+        });
+    });
+
+    function number(txb) {
+        txb.value = txb.value.replace(/[^\0-9]/ig, "");
+    }
+</script>
+<style>
+    tr:nth-child(even) {
+        background-color: #f5f5f5;
+    }
+</style>
+
+<div class="panel panel-default">
+    <div class="panel-body">
+        <div id="languages-grid" data-role="grid" class="k-grid k-widget">
+            <table role="grid" style="width:100%">
+                <thead class="k-grid-header" role="rowgroup">
+                    <tr role="row">
+                        <th role="columnheader" data-field="Name" data-title="Name" class="k-header">Date</th>
+                    </tr>
+                </thead>
+                <tbody role="rowgroup">
+                    @foreach (var item in Model.DeliveryAllotmentList)
+                    {
+                        <tr role="row">
+                            <td role="gridcell">
+                                <img src="/Plugins/Shipping.Aswaaq/toggle-collapse-alt_basic_blue.png" class="collapse-row" style="display:none;width:30px;padding:10px;" />
+                                <img src="/Plugins/Shipping.Aswaaq/toggle-expand-alt_basic_blue.png" class="expand-row" style="width:30px;padding:10px;" />
+                                <span style="margin-left:15px;">@item.WeekDayName</span>
+                                <div class="clearfix"></div>
+                                <div id="@item.NextDate" class="delivery-allotment-details k-grid k-widget" style="display:none;margin-left:200px; width:50%" data-role="grid">
+                                    <table>
+                                        <thead class="k-grid-header" role="rowgroup">
+                                            <tr role="row">
+                                                <th role="columnheader" data-field="Name" data-title="Name" class="k-header">@T("Delivery.TimeSpan")</th>
+                                                <th role="columnheader" data-field="Name" data-title="Name" class="k-header">@T("Delivery.TimeSpan.NoOfOrders")</th>
+                                                <th role="columnheader" data-field="Name" data-title="Name" class="k-header"></th>
+                                            </tr>
+                                        </thead>
+                                        <tbody role="rowgroup">
+                                            @foreach (var i in item.DeliveryAllotmentList)
+                                            {
+                                                <tr role="row">
+                                                    <td role="gridcell">@i.TimeSpan</td>
+
+                                                    <td role="gridcell"><span class="timespan-quantity">@i.NumbersOfOrders</span><input class="timespan-quantity-input number" type="text" value="@i.NumbersOfOrders" style="display:none;width:80px;"></td>
+
+                                                    <td role="gridcell">
+                                                        <input type="hidden" class="day-number" value="@i.DayNumber" />
+                                                        <input type="hidden" class="time-span-id" value="@i.TimeSpanID" />
+                                                        <div class="k-button k-button-icontext k-grid-edit"><span class="k-icon k-edit"></span>Edit</div>
+                                                        <button class="k-button k-button-icontext k-grid-update" type="submit" style="display:none;"><span class="k-icon k-update"></span>Update</button>
+                                                    </td>
+                                                </tr>
+                                            }
+                                        </tbody>
+                                    </table>
+                                    <div class="k-pager-wrap k-grid-pager k-widget" data-role="pager"><a href="#" class="k-pager-refresh k-link" title="Refresh"></a></div>
+                                </div>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+            <div class="k-pager-wrap k-grid-pager k-widget" data-role="pager"><a href="#" class="k-pager-refresh k-link" title="Refresh"></a></div>
+        </div>
+    </div>
+</div>
+
